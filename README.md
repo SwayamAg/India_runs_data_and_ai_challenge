@@ -19,7 +19,7 @@ The ranker selects the **top 100 candidates**, ordered from best-fit (Rank 1) to
 5. [Model Evaluation & Metrics](#model-evaluation--metrics)
 6. [Top Candidate Insights](#top-candidate-insights)
 7. [Reasoning Generation Samples](#reasoning-generation-samples)
-8. [Repository Structure](#repository-structure)
+8. [Sample Input, Workflow & Output](#sample-input-workflow--output)
 
 ---
 
@@ -105,10 +105,10 @@ python -m venv .venv
 .venv\Scripts\activate
 
 # 3. Run the ranker
-python "[PUB] India_runs_data_and_ai_challenge/India_runs_data_and_ai_challenge/rank.py" --candidates "[PUB] India_runs_data_and_ai_challenge/India_runs_data_and_ai_challenge/candidates.jsonl" --out "[PUB] India_runs_data_and_ai_challenge/India_runs_data_and_ai_challenge/submission.csv"
+python rank.py --candidates ./candidates.jsonl --out ./submission.csv
 
 # 4. Run the format validator
-python "[PUB] India_runs_data_and_ai_challenge/India_runs_data_and_ai_challenge/validate_submission.py" "[PUB] India_runs_data_and_ai_challenge/India_runs_data_and_ai_challenge/submission.csv"
+python validate_submission.py submission.csv
 ```
 
 ---
@@ -148,12 +148,61 @@ Our ranker programmatically drafts non-templated, factual reasonings to guarante
 
 ---
 
-## Repository Structure
+## Sample Input, Workflow & Output
 
-- `[PUB] India_runs_data_and_ai_challenge/India_runs_data_and_ai_challenge/` - Challenge Bundle:
-  - [rank.py](file:///c:/SWAYAMs/PROJ/India_Runs/[PUB] India_runs_data_and_ai_challenge/India_runs_data_and_ai_challenge/rank.py) - Main candidate ranking script.
-  - [submission.csv](file:///c:/SWAYAMs/PROJ/India_Runs/[PUB] India_runs_data_and_ai_challenge/India_runs_data_and_ai_challenge/submission.csv) - Generated top 100 ranking output.
-  - [validate_submission.py](file:///c:/SWAYAMs/PROJ/India_Runs/[PUB] India_runs_data_and_ai_challenge/India_runs_data_and_ai_challenge/validate_submission.py) - Official submission format validator.
-- [PROBLEM_STATEMENT.md](file:///c:/SWAYAMs/PROJ/India_Runs/PROBLEM_STATEMENT.md) - Deep dive into challenge traps, honeypots, and metrics.
-- [WORKFLOW.md](file:///c:/SWAYAMs/PROJ/India_Runs/WORKFLOW.md) - Scoring methodology, multipliers, and logic flow.
-- [TASKS.md](file:///c:/SWAYAMs/PROJ/India_Runs/TASKS.md) - Task checklist and milestones status.
+Below is an end-to-end example of how a candidate flows through our discovery and ranking system.
+
+### 1. Sample Input Candidate (from `candidates.jsonl`)
+```json
+{
+  "candidate_id": "CAND_0052682",
+  "profile": {
+    "anonymized_name": "Ira Mukherjee",
+    "current_title": "NLP Engineer",
+    "years_of_experience": 6.6,
+    "location": "Vizag, Andhra Pradesh",
+    "country": "India"
+  },
+  "career_history": [
+    {
+      "company": "Aganitha",
+      "title": "NLP Engineer",
+      "duration_months": 24,
+      "description": "Built semantic search and retrieval systems..."
+    },
+    {
+      "company": "Salesforce",
+      "title": "Software Engineer",
+      "duration_months": 36,
+      "description": "Developed backend APIs..."
+    }
+  ],
+  "skills": [
+    { "name": "QLoRA", "proficiency": "expert", "duration_months": 20, "endorsements": 8 },
+    { "name": "FAISS", "proficiency": "advanced", "duration_months": 15, "endorsements": 12 }
+  ],
+  "redrob_signals": {
+    "signup_date": "2024-03-12",
+    "last_active_date": "2026-03-28",
+    "recruiter_response_rate": 0.88,
+    "notice_period_days": 30,
+    "open_to_work_flag": true
+  }
+}
+```
+
+### 2. Processing Workflow
+1. **Stage 1 (Filters)**: Passes honeypot check (dates are valid, skill durations are $>0$). Current title is technical. Experience ($6.6$ years) is within target range $[4, 12]$. Country is India. Worked at Salesforce and Aganitha (product startup/AI startup), passing the services-only exclusion.
+2. **Stage 2 (Scoring)**:
+   * **Title Score**: `NLP Engineer` receives a strong technical title weight of $0.8$.
+   * **Experience Score**: $6.6$ years falls directly inside the target $5\text{--}9$ years range ($1.0$ weight).
+   * **Skill Score**: High-value skills (`QLoRA` and `FAISS`) are matched and scaled by their proficiency, endorsements, and duration, receiving a high trust score.
+   * **Career Score**: Description matches semantic search keywords; receives a bonus for working at a product firm (Salesforce) and an AI startup (Aganitha).
+   * **Behavioral Multiplier**: Multiplied by strong platform activity factors ($88\%$ response rate, $30$-day notice period, open-to-work flag).
+3. **Deterministic Sorting**: Rounds the final score to $0.8049$ and sorts by score descending, tie-breaking by `CAND_0052682` alphabetically.
+
+### 3. Sample Output (in `submission.csv`)
+```csv
+candidate_id,rank,score,reasoning
+CAND_0052682,1,0.8049,"Stellar NLP Engineer with 6.6 years of experience, possessing deep expertise in QLoRA, FAISS. Proven track record of shipping ML systems at Aganitha and Salesforce. Excellent availability with 88% response rate and quick 30-day notice period, based in Vizag, Andhra Pradesh."
+```
