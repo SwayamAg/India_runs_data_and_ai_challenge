@@ -37,46 +37,57 @@ Our system implements a **Two-Stage Ranking Architecture** to address these trap
 
 ## Ranking Pipeline & Architecture
 
-```
-                       [100,000 Candidate Pool]
-                                  │
-                                  ▼
-                     ┌──────────────────────────┐
-                     │  STAGE 1: FAST FILTERS   │
-                     │  - Honeypot Detector     │
-                     │  - Tech Title Matcher    │
-                     │  - Product Company Check │
-                     │  - Country India Match   │
-                     │  - Exp Range [4.0, 12.0] │
-                     └────────────┬─────────────┘
-                                  │
-                                  ▼ (~13,300 Candidates)
-                     ┌──────────────────────────┐
-                     │ STAGE 2: SCORING MODEL   │
-                     │  - Title Relevance (30%) │
-                     │  - Experience Match (10%)│
-                     │  - Skill Trust (35%)     │
-                     │  - Career History (25%)  │
-                     └────────────┬─────────────┘
-                                  │
-                                  ▼ (Technical Score)
-                     ┌──────────────────────────┐
-                     │  BEHAVIORAL MULTIPLIER   │
-                     │  - Recruiter Response    │
-                     │  - Active Login Recency  │
-                     │  - Notice Period Days    │
-                     │  - Open to Work Flag     │
-                     └────────────┬─────────────┘
-                                  │
-                                  ▼
-                      [Deterministic Tie-Break]
-                      (Round score, sort by ID)
-                                  │
-                                  ▼
-                      [Dynamic Reasonings Gen]
-                                  │
-                                  ▼
-                        [Top 100 Submission]
+```mermaid
+graph TD
+    %% Define Classes for Styling
+    classDef pool fill:#1e1e2f,stroke:#00f0ff,stroke-width:2px,color:#e0e0ff,rx:10px,ry:10px;
+    classDef stage1 fill:#2c1b3d,stroke:#ff79c6,stroke-width:1.5px,color:#f8f8f2,rx:6px,ry:6px;
+    classDef stage2 fill:#1c2d42,stroke:#8be9fd,stroke-width:1.5px,color:#f8f8f2,rx:6px,ry:6px;
+    classDef behavioral fill:#1b3d2c,stroke:#50fa7b,stroke-width:1.5px,color:#f8f8f2,rx:6px,ry:6px;
+    classDef process fill:#2a2a3a,stroke:#bd93f9,stroke-width:1.5px,color:#f8f8f2,rx:6px,ry:6px;
+    classDef output fill:#1b3d3d,stroke:#50fa7b,stroke-width:2px,color:#e0e0ff,rx:10px,ry:10px;
+
+    A["👥 100,000 Candidates Pool"]:::pool --> B["🔍 Stage 1: Fast Filters"]:::process
+    
+    subgraph S1 ["🧹 STAGE 1: CANDIDATE CLEANSING"]
+        B --> B1["🛡️ Honeypot Detector"]:::stage1
+        B --> B2["💼 Tech Title Matcher"]:::stage1
+        B --> B3["🏢 Product Company Filter"]:::stage1
+        B --> B4["📍 Country India Matcher"]:::stage1
+        B --> B5["⏳ Experience: 4.0 - 12.0 yrs"]:::stage1
+    end
+    
+    B1 & B2 & B3 & B4 & B5 --> C["✨ ~13,300 Clean Candidates"]:::process
+    
+    C --> D["📊 Stage 2: Scoring Model"]:::process
+    
+    subgraph S2 ["⚡ STAGE 2: TECHNICAL WEIGHTS"]
+        D --> D1["🎯 Title Relevance (30%)"]:::stage2
+        D --> D2["📈 Experience Match (10%)"]:::stage2
+        D --> D3["🤝 Skill Trust Multiplier (35%)"]:::stage2
+        D --> D4["🔎 Career History Search (25%)"]:::stage2
+    end
+    
+    D1 & D2 & D3 & D4 --> E["📐 Raw Technical Score"]:::process
+    
+    E --> F["⚙️ Behavioral Multiplier"]:::process
+    
+    subgraph S3 ["💡 BEHAVIORAL ENGAGEMENT"]
+        F --> F1["💬 Recruiter Response Rate"]:::behavioral
+        F --> F2["🕒 Active Login Recency"]:::behavioral
+        F --> F3["📅 Notice Period Days"]:::behavioral
+        F --> F4["🟢 Open to Work Flag"]:::behavioral
+    end
+    
+    F1 & F2 & F3 & F4 --> G["🏆 Final Composite Score"]:::process
+    G --> H["🔀 Deterministic Tie-Break"]:::process
+    H --> I["✍️ Dynamic Reasonings Generator"]:::process
+    I --> J["💾 submission.csv (Top 100)"]:::output
+
+    %% Apply subgraph styles
+    style S1 fill:#161021,stroke:#3b2754,stroke-width:1px,color:#bd93f9
+    style S2 fill:#0f1a26,stroke:#1e3c59,stroke-width:1px,color:#8be9fd
+    style S3 fill:#0f2619,stroke:#1e5933,stroke-width:1px,color:#50fa7b
 ```
 
 ---
