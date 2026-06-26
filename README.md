@@ -50,34 +50,50 @@ graph TD
     A["👥 100,000 Candidates Pool"]:::pool --> B["🔍 Stage 1: Fast Filters"]:::process
     
     subgraph S1 ["🧹 STAGE 1: CANDIDATE CLEANSING"]
-        B --> B1["🛡️ Honeypot Detector"]:::stage1
-        B --> B2["💼 Tech Title Matcher"]:::stage1
-        B --> B3["🏢 Product Company Filter"]:::stage1
-        B --> B4["📍 Country India Matcher"]:::stage1
-        B --> B5["⏳ Experience: 4.0 - 12.0 yrs"]:::stage1
+        B1["🛡️ Honeypot Detector"]:::stage1
+        B2["💼 Tech Title Matcher"]:::stage1
+        B3["🏢 Product Company Filter"]:::stage1
+        B4["📍 Country India Matcher"]:::stage1
+        B5["⏳ Experience: 4.0 - 12.0 yrs"]:::stage1
     end
+    
+    B --> B1
+    B --> B2
+    B --> B3
+    B --> B4
+    B --> B5
     
     B1 & B2 & B3 & B4 & B5 --> C["✨ ~13,300 Clean Candidates"]:::process
     
     C --> D["📊 Stage 2: Scoring Model"]:::process
     
     subgraph S2 ["⚡ STAGE 2: TECHNICAL WEIGHTS"]
-        D --> D1["🎯 Title Relevance (30%)"]:::stage2
-        D --> D2["📈 Experience Match (10%)"]:::stage2
-        D --> D3["🤝 Skill Trust Multiplier (35%)"]:::stage2
-        D --> D4["🔎 Career History Search (25%)"]:::stage2
+        D1["🎯 Title Relevance (30%)"]:::stage2
+        D2["📈 Experience Match (10%)"]:::stage2
+        D3["🤝 Skill Trust Multiplier (35%)"]:::stage2
+        D4["🔎 Career History Search (25%)"]:::stage2
     end
+    
+    D --> D1
+    D --> D2
+    D --> D3
+    D --> D4
     
     D1 & D2 & D3 & D4 --> E["📐 Raw Technical Score"]:::process
     
     E --> F["⚙️ Behavioral Multiplier"]:::process
     
     subgraph S3 ["💡 BEHAVIORAL ENGAGEMENT"]
-        F --> F1["💬 Recruiter Response Rate"]:::behavioral
-        F --> F2["🕒 Active Login Recency"]:::behavioral
-        F --> F3["📅 Notice Period Days"]:::behavioral
-        F --> F4["🟢 Open to Work Flag"]:::behavioral
+        F1["💬 Recruiter Response Rate"]:::behavioral
+        F2["🕒 Active Login Recency"]:::behavioral
+        F3["📅 Notice Period Days"]:::behavioral
+        F4["🟢 Open to Work Flag"]:::behavioral
     end
+    
+    F --> F1
+    F --> F2
+    F --> F3
+    F --> F4
     
     F1 & F2 & F3 & F4 --> G["🏆 Final Composite Score"]:::process
     G --> H["🔀 Deterministic Tie-Break"]:::process
