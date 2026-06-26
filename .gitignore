@@ -4,3 +4,6 @@ __pycache__/
 *.log
 scratch/
 .DS_Store
+candidates.jsonl
+candidates.jsonl.gz
+*.docx
