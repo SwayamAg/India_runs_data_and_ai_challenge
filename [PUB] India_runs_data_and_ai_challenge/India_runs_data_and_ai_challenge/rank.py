@@ -317,7 +317,7 @@ def main():
             c = json.loads(line)
             score, reason = score_candidate(c)
             if score is not None:
-                scored_candidates.append((score, c))
+                scored_candidates.append((round(score, 4), c))
                 
     # Sort by score descending, tie-break by candidate_id ascending
     scored_candidates.sort(key=lambda x: (-x[0], x[1]['candidate_id']))
