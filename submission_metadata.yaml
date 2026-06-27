@@ -15,13 +15,10 @@ primary_contact:
 team_members:
   - name: "Swayam Agarwal"
     email: "swayamagarwal19@gmail.com"
-    role: "ML Engineer"
   - name: "Sabhya Rajvanshi"
     email: "rajvanshisabhya9@gmail.com"
-    role: "ML Engineer"
   - name: "Shashwat Ranjan"
     email: "shashwatranjan02@gmail.com"
-    role: "ML Engineer"
 
 # ============================================================================
 # Code and reproducibility
