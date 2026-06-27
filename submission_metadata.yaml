@@ -9,12 +9,18 @@ team_name: "Codigo Maestro"  # Used in leaderboard and announcements
 
 primary_contact:
   name: "Swayam Agarwal"
-  email: "swayam@example.com"   # Used for all organizer communication
-  phone: "+91-XXXXXXXXXX"        # Used for top-50 / top-10 outreach
+  email: "swayamagarwal19@gmail.com"   # Used for all organizer communication
+  phone: "+91-XXXXXXXXXX"              # Used for top-50 / top-10 outreach
 
 team_members:
   - name: "Swayam Agarwal"
-    email: "swayam@example.com"
+    email: "swayamagarwal19@gmail.com"
+    role: "ML Engineer"
+  - name: "Sabhya Rajvanshi"
+    email: "rajvanshisabhya9@gmail.com"
+    role: "ML Engineer"
+  - name: "Shashwat Ranjan"
+    email: "shashwatranjan02@gmail.com"
     role: "ML Engineer"
 
 # ============================================================================
