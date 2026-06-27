@@ -92,7 +92,7 @@ graph TD
     
     G --> H["🔀 Deterministic Tie-Break"]:::process
     H --> I["✍️ Dynamic Reasonings Generator"]:::process
-    I --> J["💾 submission.csv (Top 100)"]:::output
+    I --> J["💾 Codigo_Maestro.csv (Top 100)"]:::output
 
     %% Apply subgraph styles
     style S1 fill:#161021,stroke:#3b2754,stroke-width:1px,color:#bd93f9
@@ -126,10 +126,10 @@ python -m venv .venv
 .venv\Scripts\activate
 
 # 3. Run the ranker
-python rank.py --candidates ./candidates.jsonl --out ./submission.csv
+python rank.py --candidates ./candidates.jsonl --out ./Codigo_Maestro.csv
 
 # 4. Run the format validator
-python validate_submission.py submission.csv
+python validate_submission.py Codigo_Maestro.csv
 ```
 
 ---
@@ -222,7 +222,7 @@ Below is an end-to-end example of how a candidate flows through our discovery an
    * **Behavioral Multiplier**: Multiplied by strong platform activity factors ($88\%$ response rate, $30$-day notice period, open-to-work flag).
 3. **Deterministic Sorting**: Rounds the final score to $0.8049$ and sorts by score descending, tie-breaking by `CAND_0052682` alphabetically.
 
-### 3. Sample Output (in `submission.csv`)
+### 3. Sample Output (in `Codigo_Maestro.csv`)
 ```csv
 candidate_id,rank,score,reasoning
 CAND_0052682,1,0.8049,"Stellar NLP Engineer with 6.6 years of experience, possessing deep expertise in QLoRA, FAISS. Proven track record of shipping ML systems at Aganitha and Salesforce. Excellent availability with 88% response rate and quick 30-day notice period, based in Vizag, Andhra Pradesh."

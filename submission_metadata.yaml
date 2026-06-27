@@ -1,0 +1,75 @@
+# Redrob Hackathon — Submission Metadata
+#
+# Mirroring Portal Submission Details.
+
+# ============================================================================
+# Team identity
+# ============================================================================
+team_name: "Codigo Maestro"  # Used in leaderboard and announcements
+
+primary_contact:
+  name: "Swayam Agarwal"
+  email: "swayam@example.com"   # Used for all organizer communication
+  phone: "+91-XXXXXXXXXX"        # Used for top-50 / top-10 outreach
+
+team_members:
+  - name: "Swayam Agarwal"
+    email: "swayam@example.com"
+    role: "ML Engineer"
+
+# ============================================================================
+# Code and reproducibility
+# ============================================================================
+github_repo: "https://github.com/SwayamAg/India_runs_data_and_ai_challenge.git"
+# Required. Must be reachable.
+
+sandbox_link: "https://huggingface.co/spaces/SwayamAg/redrob-ranker"
+# Required. A working hosted environment.
+
+reproduce_command: "python rank.py --candidates ./candidates.jsonl --out ./Codigo_Maestro.csv"
+# The single command that produces Codigo_Maestro.csv from candidates.jsonl.
+
+# ============================================================================
+# Compute environment
+# ============================================================================
+compute:
+  platform: "Local PC"
+  cpu_cores: 8
+  ram_gb: 16
+  python_version: "3.10.0"
+  os: "Windows 11"
+  uses_gpu_for_inference: false
+  has_network_during_ranking: false
+  pre_computation_required: false
+  pre_computation_time_minutes: 0
+
+# ============================================================================
+# AI tools declaration
+# ============================================================================
+ai_tools_used:
+  - "Gemini"
+  - "Cursor"
+
+ai_usage_summary: |
+  Used Gemini for code review, filter design discussion, and workflow diagram creation.
+  No candidate data was fed to any external LLM APIs during model inference.
+
+# ============================================================================
+# Approach summary (optional but recommended)
+# ============================================================================
+methodology_summary: |
+  Two-stage candidate ranker with high-fidelity honeypot filters (date/skill contradictions)
+  and IT services-firm exclusions. Features a skill confidence trust-multiplier
+  scaling relevance by ln(1+endorsements)*ln(1+duration) to block keyword stuffers,
+  a semantic career history search for plain-language fits, and behavioral signals
+  weighting availability. Under 10 seconds execution time on CPU.
+
+# ============================================================================
+# Declarations
+# ============================================================================
+declarations:
+  read_submission_spec: true
+  code_is_original_work: true
+  no_collusion: true
+  honeypot_check_done: true
+  reproduction_tested: true
