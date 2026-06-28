@@ -250,7 +250,7 @@ CAND_0052682,1,0.8049,"Stellar NLP Engineer with 6.6 years of experience, posses
 
 ### Security
 * **Offline Execution**: Zero network dependencies, eliminating exposure to API key thefts or outbound data leaks.
-* **Validation**: Sanitizes candidate profiles inside the [score_candidate](file:///c:/SWAYAMs/PROJ/India_Runs/rank.py#L21) function before evaluating them to block script injections.
+* **Validation**: Sanitizes candidate profiles inside the `score_candidate` function before evaluating them to block script injections.
 
 ### Limitations
 * **Exact Title Mapping**: Expects standard technical titles; fuzzy/synonymous titles might score lower.

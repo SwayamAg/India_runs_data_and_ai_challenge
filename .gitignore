@@ -4,6 +4,9 @@ __pycache__/
 *.log
 scratch/
 .DS_Store
+.vscode/
+.idea/
+.gemini/
 candidates.jsonl
 candidates.jsonl.gz
 *.docx
