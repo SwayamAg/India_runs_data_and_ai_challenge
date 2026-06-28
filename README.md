@@ -16,9 +16,9 @@ The ranker selects the **top 100 candidates**, ordered from best-fit (Rank 1) to
 
 ## Table of Contents
 1. [Project Overview](#project-overview)
-2. [Ranking Pipeline & Architecture](#ranking-pipeline--architecture)
-3. [Key Features](#key-features)
-4. [Technology Stack](#technology-stack)
+2. [Technology Stack](#technology-stack)
+3. [Ranking Pipeline & Architecture](#ranking-pipeline--architecture)
+4. [Key Features](#key-features)
 5. [Reproduction & Quick Start](#reproduction--quick-start)
 6. [Model Evaluation & Metrics](#model-evaluation--metrics)
 7. [Top Candidate Insights](#top-candidate-insights)
@@ -36,6 +36,18 @@ In a real recruiting platform, candidates generate observable behavior beyond wh
 - **Plain-Language Matches**: High-quality candidates who worked on core systems (e.g. recommenders) but did not use trend keywords.
 
 Our system implements a **Two-Stage Ranking Architecture** to address these traps while staying within a **5-minute CPU budget**.
+
+---
+
+## Technology Stack
+
+Our candidate discovery engine is designed to be lightweight, dependency-free, and extremely fast, utilizing core Python standard libraries to prevent external package failures and optimize compute:
+
+*   **Language**: Python 3.10+ (compatible with Python 3.8 through 3.12+)
+*   **Scoring & Parsing**: Core standard libraries (`math` for logarithmic scaling, `json` for streaming `.jsonl` profiles, `csv` for writing structured outputs, `datetime` for date comparison logic, and `argparse` for CLI commands).
+*   **Virtual Environment**: Managed using Python virtual environment (`.venv`).
+*   **Format Validation**: Built-in verification utilizing the standard library testing framework (`sys`, `re`, `pathlib`).
+*   **Zero-Dependency Design**: Avoids external heavy ML frameworks (like PyTorch, TensorFlow, or transformers) and network API endpoints (like OpenAI or Claude) during ranking runtime, assuring 100% compliance with strict execution time limits.
 
 ---
 
@@ -113,23 +125,6 @@ graph TD
 * **Plain-Language Matcher**: Searches historical role descriptions for key system phrases (e.g. "recommendation systems", "vector search", "RAG pipelines") to bubble up Tier-5 fits.
 * **Availability Bias**: Down-weights inactive candidates (e.g., active > 6 months ago) and candidates with long notice periods (e.g., 90+ days).
 * **Deterministic Tie-Breaking**: Scores are rounded to 4 decimal places in Python prior to sorting, and tied candidates are sorted alphabetically ascending by `candidate_id`, matching the validator script.
-
----
-
-## Technology Stack
-
-The candidate ranking engine is designed for maximum speed, security, and portability. It uses **zero external dependencies** and is built entirely using Python's standard library modules:
-
-*   **Programming Language**: Python 3.10+
-*   **Data Processing**: `json` (for high-speed candidate record parsing), `csv` (for generating standard submission outputs)
-*   **Scoring Mathematics**: `math` (logarithmic trust scaling and scoring curves)
-*   **Time & Date Calculations**: `datetime` (active logins and age validations)
-*   **CLI Parser**: `argparse` (flexible argument parsing for inputs and outputs)
-
-### Why this stack?
-1.  **Speed**: Standard library operations are highly optimized, allowing the system to filter and rank 50,000+ candidates in under 10 seconds.
-2.  **Compliance**: 100% offline. Zero network calls or external APIs required during the scoring process.
-3.  **Stability**: Zero third-party library dependencies mean no version conflicts or environment setup errors during Stage 3 sandbox reproduction.
 
 ---
 
