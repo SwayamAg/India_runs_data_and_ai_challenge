@@ -8,3 +8,5 @@ candidates.jsonl
 candidates.jsonl.gz
 *.docx
 loom_demo_script.*
+README_Skill.md
+readme_sample.md
