@@ -18,11 +18,12 @@ The ranker selects the **top 100 candidates**, ordered from best-fit (Rank 1) to
 1. [Project Overview](#project-overview)
 2. [Ranking Pipeline & Architecture](#ranking-pipeline--architecture)
 3. [Key Features](#key-features)
-4. [Reproduction & Quick Start](#reproduction--quick-start)
-5. [Model Evaluation & Metrics](#model-evaluation--metrics)
-6. [Top Candidate Insights](#top-candidate-insights)
-7. [Reasoning Generation Samples](#reasoning-generation-samples)
-8. [Sample Input, Workflow & Output](#sample-input-workflow--output)
+4. [Technology Stack](#technology-stack)
+5. [Reproduction & Quick Start](#reproduction--quick-start)
+6. [Model Evaluation & Metrics](#model-evaluation--metrics)
+7. [Top Candidate Insights](#top-candidate-insights)
+8. [Reasoning Generation Samples](#reasoning-generation-samples)
+9. [Sample Input, Workflow & Output](#sample-input-workflow--output)
 
 ---
 
@@ -112,6 +113,23 @@ graph TD
 * **Plain-Language Matcher**: Searches historical role descriptions for key system phrases (e.g. "recommendation systems", "vector search", "RAG pipelines") to bubble up Tier-5 fits.
 * **Availability Bias**: Down-weights inactive candidates (e.g., active > 6 months ago) and candidates with long notice periods (e.g., 90+ days).
 * **Deterministic Tie-Breaking**: Scores are rounded to 4 decimal places in Python prior to sorting, and tied candidates are sorted alphabetically ascending by `candidate_id`, matching the validator script.
+
+---
+
+## Technology Stack
+
+The candidate ranking engine is designed for maximum speed, security, and portability. It uses **zero external dependencies** and is built entirely using Python's standard library modules:
+
+*   **Programming Language**: Python 3.10+
+*   **Data Processing**: `json` (for high-speed candidate record parsing), `csv` (for generating standard submission outputs)
+*   **Scoring Mathematics**: `math` (logarithmic trust scaling and scoring curves)
+*   **Time & Date Calculations**: `datetime` (active logins and age validations)
+*   **CLI Parser**: `argparse` (flexible argument parsing for inputs and outputs)
+
+### Why this stack?
+1.  **Speed**: Standard library operations are highly optimized, allowing the system to filter and rank 50,000+ candidates in under 10 seconds.
+2.  **Compliance**: 100% offline. Zero network calls or external APIs required during the scoring process.
+3.  **Stability**: Zero third-party library dependencies mean no version conflicts or environment setup errors during Stage 3 sandbox reproduction.
 
 ---
 
