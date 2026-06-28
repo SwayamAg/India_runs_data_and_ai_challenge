@@ -1,0 +1,99 @@
+================================================================================
+                    LOOM DEMO RECORDING SCRIPT — CODIGO MAESTRO
+================================================================================
+
+Total Target Duration: 2 minutes, 30 seconds
+
+PREPARATIONS BEFORE RECORDING:
+1. Open README.md in VS Code or GitHub (focusing on the Mermaid architecture flowchart).
+2. Open rank.py in VS Code.
+3. Open a terminal pointing to your virtual environment (.venv).
+4. Have submission_metadata.yaml open in a tab.
+
+--------------------------------------------------------------------------------
+1. INTRODUCTION (0:00 – 0:30)
+--------------------------------------------------------------------------------
+[On Screen]: Show the styled README.md header with the "Codigo Maestro" team name.
+
+[Voiceover Script]:
+"Hi everyone, I'm Swayam Agarwal, representing team Codigo Maestro. Today, I'm
+excited to present our submission for Track 1 of the India Runs Data & AI Challenge.
+
+Our goal was to design a highly scalable, robust ranking engine that identifies
+the top 100 candidates for a Senior AI Engineer role. We developed a two-stage 
+filter and scoring pipeline that processes over 50,000 candidate profiles under 
+10 seconds on a single CPU, fully complying with real-world low-latency and 
+strict compute limits."
+
+--------------------------------------------------------------------------------
+2. ARCHITECTURE & TWO-STAGE PIPELINE (0:30 – 1:15)
+--------------------------------------------------------------------------------
+[On Screen]: Scroll down to the Mermaid Architecture Diagram in README.md. 
+             Highlight the subgraphs with your mouse cursor as you speak.
+
+[Voiceover Script]:
+"Let’s walk through the architecture. We structured our engine into two distinct 
+stages:
+
+Stage 1 is the Disqualification Filter. Here, we eliminate candidate noise and 
+fraud. We scan for and filter out geographical mismatches, non-technical profiles, 
+and services-only careers. Crucially, we enforce honeypot detection by checking 
+for date contradictions and skill proficiency duration discrepancies.
+
+Stage 2 is the Scoring & Multiplier Engine. We calculate a composite technical 
+score using:
+- A target experience curve (5 to 9 years).
+- A title matching hierarchy.
+- A Log-Scaled Skill Trust Multiplier to penalize keyword stuffers.
+- Semantic Career History keyword searches.
+
+Finally, we apply a Behavioral Multiplier based on recruiter response rates, 
+notice periods, active recency, and open-to-work flags to prioritize highly 
+engaged candidates."
+
+--------------------------------------------------------------------------------
+3. CODE WALKTHROUGH (1:15 – 2:00)
+--------------------------------------------------------------------------------
+[On Screen]: Switch tabs to rank.py.
+             - Scroll to lines 30-43 to highlight the Honeypot check logic.
+             - Scroll to lines 140-145 to highlight the Trust Multiplier logic:
+               math.log1p(send) * math.log1p(sdur).
+
+[Voiceover Script]:
+"Looking at the code in rank.py, you can see the deterministic checks. The 
+honeypot filter catches anomalies like signup dates later than last active dates, 
+and expert proficiency skills with 0 months of duration.
+
+Further down, the skill score utilizes a logarithmic trust score—
+log(1 + endorsements) * log(1 + duration_months). This ensures that listed 
+skills are backed by real experience and peer endorsements.
+
+Once scoring is complete, we break score ties deterministically by sorting 
+alphabetically by candidate ID, ensuring reproducible rankings."
+
+--------------------------------------------------------------------------------
+4. LIVE EXECUTION & VALIDATION (2:00 – 2:30)
+--------------------------------------------------------------------------------
+[On Screen]: Switch to your Terminal window.
+             1. Run: .venv\Scripts\python rank.py --candidates candidates.jsonl --out Codigo_Maestro.csv
+             2. Wait for it to finish (~7 seconds), then run:
+                .venv\Scripts\python validate_submission.py Codigo_Maestro.csv
+
+[Voiceover Script]:
+"Let's run the ranking pipeline end-to-end on the complete dataset. As you can 
+see, it processes the entire pipeline and outputs Codigo_Maestro.csv in about 
+7 seconds, using less than 60MB of RAM—easily passing our 5-minute compute budget.
+
+Now, let’s run the official format validator on our generated file. As you can 
+see, the output says: 'Submission is valid.' This proves that all ranks, score 
+trends, and tie-breakers comply 100% with the challenge rules.
+
+Thank you so much for watching, and we look forward to the next stage!"
+
+--------------------------------------------------------------------------------
+RECORDING TIPS:
+--------------------------------------------------------------------------------
+* Keep your mouse movements smooth when highlighting sections.
+* Speak at a steady, conversational pace.
+* Ensure your microphone volume is clear and ambient noise is minimized.
+================================================================================
