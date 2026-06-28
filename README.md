@@ -4,6 +4,9 @@
 [![Platform](https://img.shields.io/badge/platform-CPU--only-orange.svg)]()
 [![Validation](https://img.shields.io/badge/validator-passing-green.svg)]()
 [![Dataset Size](https://img.shields.io/badge/candidates-100k-purple.svg)]()
+[![Loom Walkthrough](https://img.shields.io/badge/Loom-Walkthrough-red?logo=loom&logoColor=white)](https://www.loom.com/share/9f5801c704664b98a7a889cd7ccd2a98)
+
+🎥 **[Loom Video Walkthrough & Demo](https://www.loom.com/share/9f5801c704664b98a7a889cd7ccd2a98)**
 
 Welcome to the India Runs AI & Data Challenge repository. This project builds a high-quality candidate discovery and ranking system that matches a **100,000 candidate database** against a complex "Senior AI Engineer — Founding Team" job description (JD) at Redrob AI.
 

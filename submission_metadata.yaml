@@ -15,7 +15,7 @@ team_members:
     email: "shashwatranjan02@gmail.com"
 
 github_repo: "https://github.com/SwayamAg/India_runs_data_and_ai_challenge.git"
-sandbox_link: "Coming soon..."
+sandbox_link: "https://www.loom.com/share/9f5801c704664b98a7a889cd7ccd2a98"
 reproduce_command: "python rank.py --candidates ./candidates.jsonl --out ./Codigo_Maestro.csv"
 
 compute:
