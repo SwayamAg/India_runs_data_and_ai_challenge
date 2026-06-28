@@ -8,25 +8,38 @@
 
 🎥 **[Loom Video Walkthrough & Demo](https://www.loom.com/share/9f5801c704664b98a7a889cd7ccd2a98)**
 
-Welcome to the India Runs AI & Data Challenge repository. This project builds a high-quality candidate discovery and ranking system that matches a **100,000 candidate database** against a complex "Senior AI Engineer — Founding Team" job description (JD) at Redrob AI.
+Welcome to the India Runs AI & Data Challenge repository. This project implements a rule-based candidate discovery and ranking system that matches a **100,000 candidate database** against the "Senior AI Engineer — Founding Team" job description (JD) at Redrob AI.
 
-The ranker selects the **top 100 candidates**, ordered from best-fit (Rank 1) to 100th-best-fit (Rank 100), with zero-hallucination dynamic reasonings, fully complying with compute, format, and honeypot constraints.
+The ranker selects the **top 100 candidates**, ordered from best-fit (Rank 1) to 100th-best-fit (Rank 100), with programmatically generated factual reasonings, complying with compute, format, and honeypot constraints.
+
+---
+
+## Competition Compliance
+
+This project complies with all requirements of the challenge:
+* **CPU-Only Execution**: Runs entirely on standard CPU compute without GPU acceleration.
+* **Offline Ranking**: Zero network calls or external API dependencies during ranking runtime.
+* **Scale**: Processes a candidate dataset of 100,000 records.
+* **Target Output**: Identifies and formats the Top 100 ranked candidates.
+* **Deterministic Results**: Ranking and tie-breaker sorting are fully deterministic.
+* **Format Compliance**: Output is fully compliant with the official validation script.
 
 ---
 
 ## Table of Contents
-1. [Project Overview](#project-overview)
-2. [Technology Stack](#technology-stack)
-3. [Ranking Pipeline & Architecture](#ranking-pipeline--architecture)
-4. [Key Features](#key-features)
-5. [Design Decisions](#design-decisions)
-6. [Reproduction & Quick Start](#reproduction--quick-start)
-7. [Project Structure](#project-structure)
-8. [Model Evaluation & Metrics](#model-evaluation--metrics)
-9. [Sample Input, Workflow & Output](#sample-input-workflow--output)
-10. [Security & Limitations](#security--limitations)
-11. [Future Improvements](#future-improvements)
-12. [Team](#team)
+1. [Competition Compliance](#competition-compliance)
+2. [Project Overview](#project-overview)
+3. [Technology Stack](#technology-stack)
+4. [Ranking Pipeline & Architecture](#ranking-pipeline--architecture)
+5. [Key Features](#key-features)
+6. [Design Decisions](#design-decisions)
+7. [Reproduction & Quick Start](#reproduction--quick-start)
+8. [Project Structure](#project-structure)
+9. [Model Evaluation & Metrics](#model-evaluation--metrics)
+10. [Sample Input, Workflow & Output](#sample-input-workflow--output)
+11. [Security & Limitations](#security--limitations)
+12. [Future Improvements](#future-improvements)
+13. [Team](#team)
 
 ---
 
@@ -36,7 +49,7 @@ In a real recruiting platform, candidates generate observable behavior beyond wh
 - **Keyword Stuffers**: Non-tech profiles copy-pasting buzzwords.
 - **Honeypots**: Fictional profiles containing contradictory dates or skills.
 - **Service-only backgrounds**: Candidates lacking product/startup engineering experience.
-- **Plain-Language Matches**: High-quality candidates who worked on core systems (e.g. recommenders) but did not use trend keywords.
+- **Plain-Language Matches**: Candidates who worked on core systems (e.g. recommenders) but did not use trend keywords.
 
 Our system implements a **Two-Stage Ranking Architecture** to address these traps while staying within a **5-minute CPU budget**.
 
@@ -125,7 +138,7 @@ graph TD
 
 * **Honeypot Excluder**: Automatically filters out profiles with `signup_date > last_active_date` or `duration_months == 0` for any `expert` skill, ensuring a **0% honeypot rate** in the submission.
 * **Skill Trust Multiplier**: Computes a confidence score: `ln(1 + endorsements) * ln(1 + duration_months)`. Buzzwords with zero duration/endorsements receive a multiplier of `0`, eliminating keyword stuffers.
-* **Plain-Language Matcher**: Searches historical role descriptions for key system phrases (e.g. "recommendation systems", "vector search", "RAG pipelines") to bubble up Tier-5 fits.
+* **Plain-Language Matcher**: A deterministic keyword and phrase-based matching logic that scans historical job descriptions for specific text patterns (e.g., "recommendation systems", "vector search", "RAG pipelines") to identify relevant experience without using neural embeddings or external LLM APIs.
 * **Availability Bias**: Down-weights inactive candidates (e.g., active > 6 months ago) and candidates with long notice periods (e.g., 90+ days).
 * **Deterministic Tie-Breaking**: Scores are rounded to 4 decimal places in Python prior to sorting, and tied candidates are sorted alphabetically ascending by `candidate_id`, matching the validator script.
 
@@ -133,7 +146,7 @@ graph TD
 
 ## Design Decisions
 
-1. **Zero-Dependency Architecture**: No external machine learning packages or network-based LLM calls. This guarantees 100% execution uptime, eliminates security risks associated with API key exposure, and runs comfortably within the 5-minute CPU budget.
+1. **Zero-Dependency Architecture**: No external machine learning packages or network-based LLM calls. This eliminates runtime failures due to external service downtime, eliminates security risks associated with API key exposure, and runs comfortably within the 5-minute CPU budget.
 2. **Log-Scaled Skill Trust Multiplier**: Instead of linear keyword counts, we apply `ln(1 + endorsements) * ln(1 + duration_months)`. This design choice filters out resume stuffers who list skills with zero actual duration or endorsements.
 3. **Two-Stage Filtering and Scoring**: Fast disqualifications in Stage 1 reduce the active pool size, optimizing CPU cycles for more expensive text processing in Stage 2.
 4. **Deterministic Tie-Breaking**: Scores are rounded to 4 decimal places and breaks ties alphabetically by `candidate_id` to guarantee reproducibility.
@@ -250,7 +263,7 @@ CAND_0052682,1,0.8049,"Stellar NLP Engineer with 6.6 years of experience, posses
 
 ### Security
 * **Offline Execution**: Zero network dependencies, eliminating exposure to API key thefts or outbound data leaks.
-* **Validation**: Sanitizes candidate profiles inside the `score_candidate` function before evaluating them to block script injections.
+* **Data Parsing Validation**: Performs schema check and date parsing validations on candidate profiles inside the `score_candidate` function to prevent execution errors.
 
 ### Limitations
 * **Exact Title Mapping**: Expects standard technical titles; fuzzy/synonymous titles might score lower.
