@@ -7,3 +7,4 @@ scratch/
 candidates.jsonl
 candidates.jsonl.gz
 *.docx
+loom_demo_script.*
