@@ -19,11 +19,14 @@ The ranker selects the **top 100 candidates**, ordered from best-fit (Rank 1) to
 2. [Technology Stack](#technology-stack)
 3. [Ranking Pipeline & Architecture](#ranking-pipeline--architecture)
 4. [Key Features](#key-features)
-5. [Reproduction & Quick Start](#reproduction--quick-start)
-6. [Model Evaluation & Metrics](#model-evaluation--metrics)
-7. [Top Candidate Insights](#top-candidate-insights)
-8. [Reasoning Generation Samples](#reasoning-generation-samples)
+5. [Design Decisions](#design-decisions)
+6. [Reproduction & Quick Start](#reproduction--quick-start)
+7. [Project Structure](#project-structure)
+8. [Model Evaluation & Metrics](#model-evaluation--metrics)
 9. [Sample Input, Workflow & Output](#sample-input-workflow--output)
+10. [Security & Limitations](#security--limitations)
+11. [Future Improvements](#future-improvements)
+12. [Team](#team)
 
 ---
 
@@ -128,6 +131,15 @@ graph TD
 
 ---
 
+## Design Decisions
+
+1. **Zero-Dependency Architecture**: No external machine learning packages or network-based LLM calls. This guarantees 100% execution uptime, eliminates security risks associated with API key exposure, and runs comfortably within the 5-minute CPU budget.
+2. **Log-Scaled Skill Trust Multiplier**: Instead of linear keyword counts, we apply `ln(1 + endorsements) * ln(1 + duration_months)`. This design choice filters out resume stuffers who list skills with zero actual duration or endorsements.
+3. **Two-Stage Filtering and Scoring**: Fast disqualifications in Stage 1 reduce the active pool size, optimizing CPU cycles for more expensive text processing in Stage 2.
+4. **Deterministic Tie-Breaking**: Scores are rounded to 4 decimal places and breaks ties alphabetically by `candidate_id` to guarantee reproducibility.
+
+---
+
 ## Reproduction & Quick Start
 
 Ensure you have a Python virtual environment set up and activated:
@@ -150,6 +162,19 @@ python validate_submission.py Codigo_Maestro.csv
 
 ---
 
+## Project Structure
+
+```text
+├── Codigo_Maestro.csv       # Final output CSV of top 100 candidates
+├── rank.py                  # Two-stage screening and scoring engine
+├── validate_submission.py   # Format validation script
+├── submission_metadata.yaml # Hackathon metadata declaration
+├── loom_demo_script.txt     # Demo recording walkthrough guide
+└── README.md                # System documentation
+```
+
+---
+
 ## Model Evaluation & Metrics
 
 The project is optimized for the following compute and scoring targets:
@@ -157,31 +182,6 @@ The project is optimized for the following compute and scoring targets:
 * **Memory Profile**: $\le 60\text{ MB}$ RAM (Budget: $16\text{ GB}$).
 * **Network**: Offline execution (no external API calls or GPUs needed).
 * **Validator Status**: Passing 100% of format rules (CSV encoding, header column order, exact 100 rows, score sorting monotonicity, and tie-breakers).
-
----
-
-## Top Candidate Insights
-
-Here are the top 5 matches retrieved from our ranker:
-
-| Rank | Candidate ID | Name | Current Title | Experience | Core Skills | Target Companies |
-|---|---|---|---|---|---|---|
-| **1** | CAND_0052682 | Ira Mukherjee | NLP Engineer | 6.6 yrs | QLoRA, Semantic Search, FAISS, PyTorch | Aganitha, Salesforce |
-| **2** | CAND_0079387 | Sneha Arora | AI Engineer | 6.9 yrs | Recommendation Systems, Sentence Transformers | Microsoft, Ola, BYJU'S |
-| **3** | CAND_0081846 | Arjun Khanna | Lead AI Engineer | 6.7 yrs | pgvector, Learning to Rank, Elasticsearch | Razorpay, Paytm |
-| **4** | CAND_0002025 | Ira Dalal | Senior AI Engineer | 5.9 yrs | FAISS, OpenSearch, Weaviate, Transformers | Apple, Aganitha |
-| **5** | CAND_0043637 | Ela Menon | Junior ML Engineer | 5.5 yrs | PyTorch, Milvus, Weights & Biases | Rephrase.ai, Yellow.ai |
-
----
-
-## Reasoning Generation Samples
-
-Our ranker programmatically drafts non-templated, factual reasonings to guarantee validation success:
-
-* **Rank 1 Sample**: 
-  > *"Stellar NLP Engineer with 6.6 years of experience, possessing deep expertise in QLoRA, FAISS. Proven track record of shipping ML systems at Aganitha and Salesforce. Excellent availability with 88% response rate and quick 30-day notice period, based in Vizag, Andhra Pradesh."*
-* **Rank 3 Sample**: 
-  > *"Stellar Lead AI Engineer with 6.7 years of experience, possessing deep expertise in Elasticsearch, PyTorch. Proven track record of shipping ML systems at Razorpay and Paytm. Based in Jaipur, Rajasthan with 73% response rate, though the 120-day notice period is a minor concern."*
 
 ---
 
@@ -243,3 +243,32 @@ Below is an end-to-end example of how a candidate flows through our discovery an
 candidate_id,rank,score,reasoning
 CAND_0052682,1,0.8049,"Stellar NLP Engineer with 6.6 years of experience, possessing deep expertise in QLoRA, FAISS. Proven track record of shipping ML systems at Aganitha and Salesforce. Excellent availability with 88% response rate and quick 30-day notice period, based in Vizag, Andhra Pradesh."
 ```
+
+---
+
+## Security & Limitations
+
+### Security
+* **Offline Execution**: Zero network dependencies, eliminating exposure to API key thefts or outbound data leaks.
+* **Validation**: Sanitizes candidate profiles inside the [score_candidate](file:///c:/SWAYAMs/PROJ/India_Runs/rank.py#L21) function before evaluating them to block script injections.
+
+### Limitations
+* **Exact Title Mapping**: Expects standard technical titles; fuzzy/synonymous titles might score lower.
+* **CPU Bottleneck**: While fast, performance scale relies on local single-threaded speed for file streams.
+
+---
+
+## Future Improvements
+
+* **Interactive GUI**: Streamlit deployment for easy file uploads and ranking visualizations.
+* **Fuzzy Title Matcher**: Using Levenshtein or token embeddings to improve title parsing.
+* **Multi-Threaded Streams**: Parallel processing of candidate records to support 1M+ databases.
+
+---
+
+## Team
+
+* **Swayam Agarwal** (Primary Contact) - swayamagarwal19@gmail.com
+* **Sabhya Rajvanshi** - rajvanshisabhya9@gmail.com
+* **Shashwat Ranjan** - shashwatranjan02@gmail.com
+
